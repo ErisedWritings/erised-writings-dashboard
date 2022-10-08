@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 import LargeNavbar from "../../../components/Navbar/largeNavbar";
 import { useRouter } from "next/router";
 import { BsMenuDown } from "react-icons/bs";
+import DeleteModal from "../../../components/posts/modals/deleteModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -40,12 +41,13 @@ const useMediaQuery = (width) => {
   return targetReached;
 };
 
-export default function BlogEditor({ post, categories, assets }) {
+export default function BlogEditor({ post, categories, assets, comments }) {
   const isBreakpoint = useMediaQuery(991);
   const isMobileBreakpoint = useMediaQuery(768);
   const router = useRouter();
   const slug = router.query.slug;
 
+  const [deletePost, setDeletePost] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -156,10 +158,6 @@ export default function BlogEditor({ post, categories, assets }) {
         saveError();
       });
   };
-  const delHandler = () => {
-    setDeletePost(true);
-    del();
-  };
 
   const unpublish = () => {
     client
@@ -168,23 +166,27 @@ export default function BlogEditor({ post, categories, assets }) {
       .commit()
       .then(() => {
         unpub();
-        setIsPub(false);
+        router.push("/posts");
       })
       .catch((err) => {
-        unpubError();
+        if (err) {
+          console.log(err);
+          unpubError();
+        }
       });
   };
   const publish = () => {
     const date = new Date();
+    var today;
     if (date.getDate().toString().length === 2) {
-      const today =
+      today =
         date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
     } else {
-      const today =
+      today =
         date.getFullYear() +
         "-" +
         (date.getMonth() + 1) +
-        "- 0" +
+        "-0" +
         date.getDate();
     }
     if (
@@ -227,7 +229,7 @@ export default function BlogEditor({ post, categories, assets }) {
     }
   };
   const schedulePublish = (date) => {
-    var today;
+    var today = new Date();
     if (date.getDate().toString().length === 2) {
       today =
         date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
@@ -309,6 +311,11 @@ export default function BlogEditor({ post, categories, assets }) {
         pauseOnFocusLoss
         draggable={false}
         pauseOnHover={false}
+      />
+      <DeleteModal
+        show={deletePost}
+        onHide={() => setDeletePost(false)}
+        delete={del}
       />
       <CategoryModal
         show={showCategoryModal}
@@ -774,7 +781,7 @@ export default function BlogEditor({ post, categories, assets }) {
             }}
           >
             <Stack direction="vertical" gap={2}>
-              {post[0].isPub ? (
+              {post[0].isPublished ? (
                 <Button
                   variant="outline-dark"
                   style={{
@@ -819,7 +826,7 @@ export default function BlogEditor({ post, categories, assets }) {
                     borderWidth: "2px",
                     width: "100%",
                   }}
-                  onClick={delHandler}
+                  onClick={() => setDeletePost(true)}
                 >
                   <b>Delete </b>
                 </Button>
@@ -829,7 +836,7 @@ export default function BlogEditor({ post, categories, assets }) {
         )}
         <Container fluid className="d-flex flex-row justify-content-end">
           <div style={{ marginRight: "10px", marginBottom: "10px" }}>
-            {post[0].isPub ? (
+            {post[0].isPublished ? (
               <Button
                 variant="dark"
                 style={{
@@ -897,11 +904,14 @@ export const getServerSideProps = async ({ params: { slug } }) => {
   const assetsQuery = '*[_type=="sanity.imageAsset"]';
   const assets = await client.fetch(assetsQuery);
 
+  const commentsQuery = '*[_type=="comment"]';
+  const comments = await client.fetch(commentsQuery);
   return {
     props: {
       categories,
       assets,
       post,
+      comments,
     },
   };
 };
