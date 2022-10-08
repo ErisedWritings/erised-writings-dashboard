@@ -21,7 +21,7 @@ export default function DeleteModal(props) {
       </Modal.Header>
       <Modal.Body>
         <p>
-          The post and the related comments will be deleted and can't be
+          The post and the related comments will be deleted and cannot be
           retreived.
         </p>
       </Modal.Body>
