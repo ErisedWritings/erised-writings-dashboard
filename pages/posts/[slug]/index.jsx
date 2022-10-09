@@ -132,32 +132,56 @@ export default function BlogEditor({ post, categories, assets, comments }) {
               router.push("/posts");
             })
             .catch((err) => {
-              deleteCommentError();
+              if (err) {
+                deleteCommentError();
+              }
             });
         }
       }
     }
   };
   const save = () => {
-    client
-      .patch(post[0]._id) // Document ID to patch
-      .set({
-        title: title,
-        body: body,
-        mainImage: {
-          _type: "image",
-          asset: { _type: "reference", _ref: mainImage },
-        },
-        description: description,
-        category: { _type: "reference", _ref: categories[category]._id },
-      })
-      .commit() // Perform the patch and return a promise
-      .then(() => {
-        saveToast();
-      })
-      .catch((err) => {
-        saveError();
-      });
+    mainImage !== null
+      ? client
+          .patch(post[0]._id) // Document ID to patch
+          .set({
+            title: title,
+            body: body,
+            mainImage: {
+              _type: "image",
+              asset: { _type: "reference", _ref: mainImage },
+            },
+            description: description,
+            category: { _type: "reference", _ref: categories[category]._id },
+          })
+          .commit() // Perform the patch and return a promise
+          .then(() => {
+            saveToast();
+          })
+          .catch((err) => {
+            if (err) {
+              saveError();
+              console.log(err);
+            }
+          })
+      : client
+          .patch(post[0]._id) // Document ID to patch
+          .set({
+            title: title,
+            body: body,
+            description: description,
+            category: { _type: "reference", _ref: categories[category]._id },
+          })
+          .commit() // Perform the patch and return a promise
+          .then(() => {
+            saveToast();
+          })
+          .catch((err) => {
+            if (err) {
+              saveError();
+              console.log(err);
+            }
+          });
   };
 
   const unpublish = () => {
@@ -326,11 +350,11 @@ export default function BlogEditor({ post, categories, assets, comments }) {
           save={save}
         />
         {isBreakpoint ? (
-          <div style={{ padding: "0px", width: "45px", height: "80%" }}>
+          <div style={{ padding: "0px", width: "45px" }}>
             <Navbar />
           </div>
         ) : (
-          <div style={{ padding: "0px", width: "200px", height: "80%" }}>
+          <div style={{ padding: "0px", width: "200px" }}>
             <LargeNavbar />
           </div>
         )}

@@ -51,11 +51,11 @@ export default function Posts({ posts, categories }) {
         className="d-flex flex-row justify-content-start"
       >
         {isBreakpoint ? (
-          <div style={{ padding: "0px", width: "45px", height: "80%" }}>
+          <div style={{ padding: "0px", width: "45px" }}>
             <Navbar />
           </div>
         ) : (
-          <div style={{ padding: "0px", width: "200px", height: "80%" }}>
+          <div style={{ padding: "0px", width: "200px" }}>
             <LargeNavbar />
           </div>
         )}
