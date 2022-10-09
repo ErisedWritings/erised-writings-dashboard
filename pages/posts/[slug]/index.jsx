@@ -926,7 +926,7 @@ export default function BlogEditor({ post, categories, assets, comments }) {
                   borderRadius: "10px",
                   height: "40px",
                 }}
-                onClick={() => router("/posts")}
+                onClick={() => router.push("/posts")}
               >
                 Cancel
               </Button>
