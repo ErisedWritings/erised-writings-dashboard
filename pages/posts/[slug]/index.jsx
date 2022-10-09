@@ -433,7 +433,6 @@ export default function BlogEditor({ post, categories, assets, comments }) {
                             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
                         }}
                       />
-
                       <Form.Label style={{ fontFamily: "Kaushan Script" }}>
                         <h3>Category</h3>
                       </Form.Label>
@@ -622,7 +621,6 @@ export default function BlogEditor({ post, categories, assets, comments }) {
                             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
                         }}
                       />
-
                       <Form.Label style={{ fontFamily: "Kaushan Script" }}>
                         <h3>Category</h3>
                       </Form.Label>

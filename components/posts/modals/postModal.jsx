@@ -21,6 +21,7 @@ export default function PostModal(props) {
       _type: "post",
       title: blogTitle,
       isPublished: false,
+      isFeatured: "false",
       category: {
         _type: "reference",
         _ref: "gG84kGwBecGHwo0HJCW14S",

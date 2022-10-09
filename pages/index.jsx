@@ -383,13 +383,15 @@ export default function Dashboard({
                   </>
                 )}
               </div>
-              <div className="d-flex justify-content-end">
-                <Link href="/posts">
-                  <div>
-                    <h6>View all posts...</h6>
-                  </div>
-                </Link>
-              </div>
+              {posts.length > 5 && (
+                <div className="d-flex justify-content-end">
+                  <Link href="/posts">
+                    <div>
+                      <h6>View all posts...</h6>
+                    </div>
+                  </Link>
+                </div>
+              )}
             </Container>
           </div>
         </Container>
