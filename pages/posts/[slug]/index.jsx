@@ -1,13 +1,13 @@
 import Navbar from "../../../components/Navbar/navbar";
 import { useState, useCallback, useEffect } from "react";
-import Authenticate from "../../../components/authenticate";
 import LargeNavbar from "../../../components/Navbar/largeNavbar";
 import { useRouter } from "next/router";
 import { BsMenuDown } from "react-icons/bs";
+import Authenticate from "../../../components/authenticate";
 import DeleteModal from "../../../components/posts/modals/deleteModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useUser } from "@auth0/nextjs-auth0";
+import { useSession } from "next-auth/react";
 import Assets from "../../../components/posts/assets";
 import Navs from "../../../components/Navbar/navs";
 import CategoryModal from "../../../components/posts/modals/catgeoryModal";
@@ -282,10 +282,8 @@ export default function BlogEditor({ post, categories, assets, comments }) {
       missingFields();
     }
   };
-  const { user, error, isLoading } = useUser();
-  const notify = () => toast("Some error occured!");
-  if (!isLoading && !user) return <Authenticate />;
-  if (user && !isLoading)
+  const { data: session } = useSession();
+  if (session) {
     return (
       <div
         style={{
@@ -920,6 +918,8 @@ export default function BlogEditor({ post, categories, assets, comments }) {
         </Container>
       </div>
     );
+  }
+  return <Authenticate />;
 }
 
 export const getServerSideProps = async ({ params: { slug } }) => {

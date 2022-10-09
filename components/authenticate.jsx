@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "react-bootstrap";
 const useMediaQuery = (width) => {
@@ -42,7 +43,7 @@ export default function Authenticate() {
             <h1>Authenticate to Continue</h1>
             <Button
               variant="outline-dark"
-              onClick={() => router.push("/api/auth/login")}
+              onClick={() => signIn()}
               style={{ width: "80px" }}
             >
               Login
@@ -60,7 +61,7 @@ export default function Authenticate() {
             <Button
               style={{ width: "80px" }}
               variant="outline-dark"
-              onClick={() => router.push("/api/auth/login")}
+              onClick={() => signIn()}
             >
               Login
             </Button>

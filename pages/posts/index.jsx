@@ -1,11 +1,10 @@
 import { client, urlFor } from "../../client";
-import { useUser } from "@auth0/nextjs-auth0";
+import { useSession } from "next-auth/react";
 import Authenticate from "../../components/authenticate";
 import Navbar from "../../components/Navbar/navbar";
 import { ImSearch } from "react-icons/im";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
 import PostModal from "../../components/posts/modals/postModal";
-
 import { useState, useCallback, useEffect } from "react";
 import LargeNavbar from "../../components/Navbar/largeNavbar";
 import PostCard from "../../components/posts/postCard";
@@ -44,10 +43,8 @@ export default function Posts({ posts, categories }) {
   const [showModal, setShowModal] = useState(false);
 
   const [searchVal, setSearchVal] = useState("");
-  const { user, error, isLoading } = useUser();
-  const notify = () => toast("Some error occured!");
-  if (!isLoading && !user) return <Authenticate />;
-  if (user && !isLoading)
+  const { data: session } = useSession();
+  if (session) {
     return (
       <div
         style={{ width: "100vw", height: "100vh" }}
@@ -300,6 +297,8 @@ export default function Posts({ posts, categories }) {
         </Container>
       </div>
     );
+  }
+  return <Authenticate></Authenticate>;
 }
 
 export const getServerSideProps = async () => {

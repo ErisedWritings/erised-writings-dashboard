@@ -1,13 +1,13 @@
 import Navbar from "../../../components/Navbar/navbar";
 import { ImSearch } from "react-icons/im";
 import { client } from "../../../client";
-import Authenticate from "../../../components/authenticate";
+import { useSession } from "next-auth/react";
 import CommentCard from "../../../components/posts/comments/commentCard";
 import { useState, useCallback, useEffect } from "react";
+import Authenticate from "../../../components/authenticate";
 import LargeNavbar from "../../../components/Navbar/largeNavbar";
 import { Container, Form } from "react-bootstrap";
 import { useRouter } from "next/router";
-import { useUser } from "@auth0/nextjs-auth0";
 
 const useMediaQuery = (width) => {
   const [targetReached, setTargetReached] = useState(false);
@@ -41,10 +41,8 @@ export default function Comments({ comments }) {
   const isMobileBreakpoint = useMediaQuery(500);
 
   const [searchVal, setSearchVal] = useState("");
-  const { user, error, isLoading } = useUser();
-  const notify = () => toast("Some error occured!");
-  if (!isLoading && !user) return <Authenticate />;
-  if (user && !isLoading)
+  const { data: session } = useSession();
+  if (session) {
     return (
       <div
         style={{ width: "100vw", height: "100vh" }}
@@ -153,6 +151,8 @@ export default function Comments({ comments }) {
         </Container>
       </div>
     );
+  }
+  return <Authenticate />;
 }
 
 export const getServerSideProps = async () => {

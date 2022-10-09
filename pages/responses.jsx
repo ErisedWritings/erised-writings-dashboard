@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { Container, Form } from "react-bootstrap";
 import { client } from "../client";
-import Authenticate from "../components/authenticate";
-import { useUser } from "@auth0/nextjs-auth0";
+import { useSession } from "next-auth/react";
 import { ImSearch } from "react-icons/im";
 import LargeNavbar from "../components/Navbar/largeNavbar";
 import Navbar from "../components/Navbar/navbar";
 import ResponseCard from "../components/responses/responseCard";
+import Authenticate from "../components/authenticate";
 const useMediaQuery = (width) => {
   const [targetReached, setTargetReached] = useState(false);
 
@@ -36,10 +36,8 @@ export default function Responses({ responses }) {
   const isBreakpoint = useMediaQuery(991);
   const isMobileBreakpoint = useMediaQuery(500);
   const [searchVal, setSearchVal] = useState("");
-  const { user, error, isLoading } = useUser();
-  const notify = () => toast("Some error occured!");
-  if (!isLoading && !user) return <Authenticate />;
-  if (user && !isLoading)
+  const { data: session } = useSession();
+  if (session) {
     return (
       <div
         style={{ width: "100vw", height: "100vh" }}
@@ -148,6 +146,8 @@ export default function Responses({ responses }) {
         </Container>
       </div>
     );
+  }
+  return <Authenticate />;
 }
 
 export const getServerSideProps = async () => {

@@ -1,7 +1,6 @@
 import { client, urlFor } from "../client";
 import CountUp from "react-countup";
-import Authenticate from "../components/authenticate";
-import { useUser } from "@auth0/nextjs-auth0";
+import { useSession } from "next-auth/react";
 import { Col, Container, Form, Row } from "react-bootstrap";
 import Navbar from "../components/Navbar/navbar";
 import { ImSearch } from "react-icons/im";
@@ -10,6 +9,7 @@ import LargeNavbar from "../components/Navbar/largeNavbar";
 import PostCard from "../components/posts/postCard";
 import Link from "next/link";
 import PostSmallCard from "../components/posts/postSmallCard";
+import Authenticate from "../components/authenticate";
 
 const useMediaQuery = (width) => {
   const [targetReached, setTargetReached] = useState(false);
@@ -49,10 +49,8 @@ export default function Dashboard({
   const noComments = comments.length;
   const noResponses = responses.length;
   const [searchVal, setSearchVal] = useState("");
-  const { user, error, isLoading } = useUser();
-  const notify = () => toast("Some error occured!");
-  if (!isLoading && !user) return <Authenticate />;
-  if (user && !isLoading)
+  const { data: session } = useSession();
+  if (session) {
     return (
       <div
         style={{ width: "100vw", height: "100vh" }}
@@ -397,6 +395,8 @@ export default function Dashboard({
         </Container>
       </div>
     );
+  }
+  return <Authenticate />;
 }
 
 export const getServerSideProps = async () => {

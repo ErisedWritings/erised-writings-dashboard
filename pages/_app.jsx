@@ -2,21 +2,22 @@ import "../styles/globals.css";
 import "bootstrap/dist/css/bootstrap.css";
 import Head from "next/head";
 import "../styles/globals.css";
-import { UserProvider } from "@auth0/nextjs-auth0";
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }) {
+export default function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <UserProvider>
+      <SessionProvider session={session}>
         <div style={{ background: "rgba(220, 208, 255, 0.5)" }}>
           <Component {...pageProps} />
         </div>
-      </UserProvider>
+      </SessionProvider>
     </>
   );
 }
-
-export default MyApp;
