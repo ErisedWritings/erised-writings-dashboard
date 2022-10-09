@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { client } from "../../../client";
 import { ToastContainer, toast } from "react-toastify";
 
+import "react-toastify/dist/ReactToastify.css";
 export default function PostModal(props) {
   const router = useRouter();
   const [blogTitle, setBlogTitle] = useState("");
@@ -22,7 +23,7 @@ export default function PostModal(props) {
       isPublished: false,
       category: {
         _type: "reference",
-        _ref: "ec460a5e-e881-4b3c-b0e5-d10356a553a9",
+        _ref: "gG84kGwBecGHwo0HJCW14S",
       },
     };
     client
@@ -32,6 +33,7 @@ export default function PostModal(props) {
       })
       .catch((err) => {
         createError();
+        console.log(err);
       });
     setBlogTitle("");
   };

@@ -17,7 +17,7 @@ export default function CategoryModal(props) {
     client.create(doc).then((res) => {
       setCategory("");
       setColor("");
-      props.save();
+      // props.save();
       Router.reload(props.path);
       props.onHide();
     });

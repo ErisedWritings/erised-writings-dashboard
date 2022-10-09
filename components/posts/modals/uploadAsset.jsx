@@ -41,7 +41,9 @@ export default function UploadAsset(props) {
             setUpload(false);
           })
           .catch((error) => {
-            uploadErrorToast();
+            if (error) {
+              uploadErrorToast();
+            }
           });
       } else {
         setWrongTypeofImage(true);
