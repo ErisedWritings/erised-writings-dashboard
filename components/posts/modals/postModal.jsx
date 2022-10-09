@@ -32,8 +32,10 @@ export default function PostModal(props) {
         router.push("/posts/" + res._id);
       })
       .catch((err) => {
-        createError();
-        console.log(err);
+        if (err) {
+          createError();
+          console.log(err);
+        }
       });
     setBlogTitle("");
   };

@@ -120,7 +120,9 @@ export default function BlogEditor({ post, categories, assets, comments }) {
           router.push("/posts");
         })
         .catch((err) => {
-          deleteError();
+          if (err) {
+            deleteError();
+          }
         });
 
       for (var i = 0; i < comments.length; i++) {
@@ -247,7 +249,9 @@ export default function BlogEditor({ post, categories, assets, comments }) {
           pub();
         })
         .catch((err) => {
-          pubError();
+          if (err) {
+            pubError();
+          }
         });
     } else {
       missingFields();
@@ -300,7 +304,9 @@ export default function BlogEditor({ post, categories, assets, comments }) {
           pub();
         })
         .catch((err) => {
-          pubError();
+          if (err) {
+            pubError();
+          }
         });
     } else {
       missingFields();

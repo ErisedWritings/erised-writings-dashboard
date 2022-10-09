@@ -15,7 +15,9 @@ export default function ShowComment(props) {
         Router.reload("/posts/" + props.slug);
       })
       .catch((err) => {
-        console.log(err);
+        if (err) {
+          console.log(err);
+        }
       });
   };
   const closeHandler = () => {
