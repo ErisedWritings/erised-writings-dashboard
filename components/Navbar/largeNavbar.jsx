@@ -1,6 +1,7 @@
 import { Button, Container } from "react-bootstrap";
 import { HiUserCircle } from "react-icons/hi";
 import PostModal from "../posts/modals/postModal";
+import { signOut } from "next-auth/react";
 import { MdOutlineDashboard, MdPostAdd } from "react-icons/md";
 import { BsFileRichtext, BsChatSquareQuote } from "react-icons/bs";
 import { useRouter } from "next/router";
@@ -27,10 +28,19 @@ export default function LargeNavbar() {
           className="p-1 d-flex flex-row justify-content-center align-items-center"
         >
           <div style={{ marginRight: "7px" }}>
-            <h1>
-              {" "}
-              <HiUserCircle />
-            </h1>
+            <Button
+              style={{
+                background: "transparent",
+                color: "#000",
+                border: "none",
+              }}
+              onClick={() => signOut()}
+            >
+              <h1>
+                {" "}
+                <HiUserCircle />
+              </h1>
+            </Button>
           </div>
           <div
             style={{ fontSize: "14px" }}

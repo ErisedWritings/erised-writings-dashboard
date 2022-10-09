@@ -3,6 +3,7 @@ import { HiUserCircle } from "react-icons/hi";
 import { MdOutlineDashboard, MdPostAdd } from "react-icons/md";
 import { BsFileRichtext, BsChatSquareQuote } from "react-icons/bs";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import PostModal from "../posts/modals/postModal";
 import { useState } from "react";
@@ -29,10 +30,19 @@ export default function Navbar() {
           }}
           className="p-1 d-flex justify-content-center align-items-center"
         >
-          <h2>
-            {" "}
-            <HiUserCircle />
-          </h2>
+          <Button
+            style={{
+              background: "transparent",
+              color: "#000",
+              border: "none",
+            }}
+            onClick={() => signOut()}
+          >
+            <h2>
+              {" "}
+              <HiUserCircle />
+            </h2>
+          </Button>
         </div>
         <div className="d-flex flex-column" style={{ marginTop: "10px" }}>
           <Link href="/">
