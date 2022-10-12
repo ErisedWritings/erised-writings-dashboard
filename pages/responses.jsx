@@ -122,7 +122,7 @@ export default function Responses({ responses }) {
                   className="p-3 d-flex justify-content-center"
                   style={{ width: "100%", marginTop: "70px" }}
                 >
-                  <h3>No responses from the "Write To ME!" form</h3>
+                  <h3>No responses from the &ldquo;Write To ME!&rdquo; form</h3>
                 </div>
               )}
               <div>
