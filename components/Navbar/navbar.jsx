@@ -58,7 +58,7 @@ export default function Navbar() {
                       height: "30px",
                       borderTopRightRadius: "5px",
                       borderBottomRightRadius: "5px",
-                      background: "#d0ccfb",
+                      background: "#734F96",
                     }}
                   />{" "}
                   <div
@@ -106,7 +106,7 @@ export default function Navbar() {
                       height: "30px",
                       borderTopRightRadius: "5px",
                       borderBottomRightRadius: "5px",
-                      background: "#d0ccfb",
+                      background: "#734F96",
                     }}
                   />{" "}
                   <div
@@ -154,7 +154,7 @@ export default function Navbar() {
                       height: "30px",
                       borderTopRightRadius: "5px",
                       borderBottomRightRadius: "5px",
-                      background: "#d0ccfb",
+                      background: "#734F96",
                     }}
                   />{" "}
                   <div

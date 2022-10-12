@@ -1,8 +1,9 @@
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "react-bootstrap";
+import Image from "next/image";
+import Head from "next/head";
 const useMediaQuery = (width) => {
   const [targetReached, setTargetReached] = useState(false);
 
@@ -33,9 +34,13 @@ export default function Authenticate() {
   const router = useRouter();
   return (
     <>
+      <Head>
+        <title>Erised Writings Dashboard</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       {isBreakpoint ? (
         <div
-          style={{ width: "100vw", height: "100vh" }}
+          style={{ width: "100%", height: "100vh" }}
           className="d-flex flex-column justify-content-center align-items-center"
         >
           <Image src={"/10258681_4384874.svg"} width="300px" height="300px" />
@@ -52,7 +57,7 @@ export default function Authenticate() {
         </div>
       ) : (
         <div
-          style={{ width: "100vw", height: "100vh" }}
+          style={{ width: "100%", height: "100vh" }}
           className="d-flex flex-row justify-content-center align-items-center"
         >
           <Image src={"/10258681_4384874.svg"} width="300px" height="300px" />
@@ -68,6 +73,12 @@ export default function Authenticate() {
           </div>
         </div>
       )}
+      <div style={{ marginTop: "100vh", fontSize: "10px", color: "#aaa" }}>
+        <a href="https://www.freepik.com/free-vector/fingerprint-concept-illustration_10258681.htm#query=authentication&position=14&from_view=keyword">
+          Image by storyset
+        </a>{" "}
+        on Freepik
+      </div>
     </>
   );
 }

@@ -15,7 +15,6 @@ export default function CommentCard({
   show,
   slug,
 }) {
-  console.log(show);
   const [modalShow, setModalShow] = useState(false);
   const [hideModal, setHideModal] = useState(false);
   const [showModal, setShowModal] = useState(false);

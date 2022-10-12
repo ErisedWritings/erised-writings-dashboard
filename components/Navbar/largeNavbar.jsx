@@ -66,9 +66,9 @@ export default function LargeNavbar() {
                     style={{
                       width: "5px",
                       height: "30px",
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
-                      background: "#d0ccfb",
+                      borderTopRightRadius: "30px",
+                      borderBottomRightRadius: "30px",
+                      background: "#734F96",
                     }}
                   />{" "}
                   <div
@@ -94,8 +94,8 @@ export default function LargeNavbar() {
                     style={{
                       width: "5px",
                       height: "30px",
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
+                      borderTopRightRadius: "30px",
+                      borderBottomRightRadius: "30px",
                       background: "transparent",
                     }}
                   />{" "}
@@ -131,9 +131,9 @@ export default function LargeNavbar() {
                     style={{
                       width: "5px",
                       height: "30px",
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
-                      background: "#d0ccfb",
+                      borderTopRightRadius: "30px",
+                      borderBottomRightRadius: "30px",
+                      background: "#734F96",
                     }}
                   />{" "}
                   <div
@@ -159,8 +159,8 @@ export default function LargeNavbar() {
                     style={{
                       width: "5px",
                       height: "30px",
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
+                      borderTopRightRadius: "30px",
+                      borderBottomRightRadius: "30px",
                       background: "transparent",
                     }}
                   />{" "}
@@ -196,9 +196,9 @@ export default function LargeNavbar() {
                     style={{
                       width: "5px",
                       height: "30px",
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
-                      background: "#d0ccfb",
+                      borderTopRightRadius: "30px",
+                      borderBottomRightRadius: "30px",
+                      background: "#734F96",
                     }}
                   />{" "}
                   <div
@@ -224,8 +224,8 @@ export default function LargeNavbar() {
                     style={{
                       width: "5px",
                       height: "30px",
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
+                      borderTopRightRadius: "30px",
+                      borderBottomRightRadius: "30px",
                       background: "transparent",
                     }}
                   />{" "}

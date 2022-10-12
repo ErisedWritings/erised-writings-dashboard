@@ -2,6 +2,7 @@ import Navbar from "../../../components/Navbar/navbar";
 import { useState, useCallback, useEffect } from "react";
 import LargeNavbar from "../../../components/Navbar/largeNavbar";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import { BsMenuDown } from "react-icons/bs";
 import Authenticate from "../../../components/authenticate";
 import DeleteModal from "../../../components/posts/modals/deleteModal";
@@ -17,6 +18,7 @@ import { Container, Form, Button, Row, Col, Stack } from "react-bootstrap";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 import ScheduleModal from "../../../components/posts/modals/scheduleModal";
+import Switch from "react-switch";
 
 const useMediaQuery = (width) => {
   const [targetReached, setTargetReached] = useState(false);
@@ -62,7 +64,7 @@ export default function BlogEditor({ post, categories, assets, comments }) {
   const [mainImage, setMainImage] = useState(
     post[0].mainImage !== undefined ? post[0].mainImage.asset._ref : null
   );
-
+  const [check, setCheck] = useState(false);
   const [category, setCategory] = useState(
     categories.findIndex((x) => x._id === post[0].category._ref)
   );
@@ -149,6 +151,7 @@ export default function BlogEditor({ post, categories, assets, comments }) {
           .set({
             title: title,
             body: body,
+            isFeatured: check,
             mainImage: {
               _type: "image",
               asset: { _type: "reference", _ref: mainImage },
@@ -171,6 +174,7 @@ export default function BlogEditor({ post, categories, assets, comments }) {
           .set({
             title: title,
             body: body,
+            isFeatured: check,
             description: description,
             category: { _type: "reference", _ref: categories[category]._id },
           })
@@ -239,6 +243,8 @@ export default function BlogEditor({ post, categories, assets, comments }) {
           title: title,
           description: description,
           isPublished: true,
+          isFeatured: check,
+
           publishAt: today,
           mainImage: { asset: { _type: "reference", _ref: mainImage } },
           category: { _type: "reference", _ref: categories[category]._id },
@@ -270,7 +276,6 @@ export default function BlogEditor({ post, categories, assets, comments }) {
         "- 0" +
         date.getDate();
     }
-    console.log(today);
     if (
       title !== "" &&
       title !== undefined &&
@@ -294,6 +299,7 @@ export default function BlogEditor({ post, categories, assets, comments }) {
           title: title,
           description: description,
           isPublished: true,
+          isFeatured: check,
           publishAt: today,
           mainImage: { asset: { _type: "reference", _ref: mainImage } },
           category: { _type: "reference", _ref: categories[category]._id },
@@ -312,639 +318,710 @@ export default function BlogEditor({ post, categories, assets, comments }) {
       missingFields();
     }
   };
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  if (status === "loading") {
+    return <></>;
+  }
   if (session) {
     return (
-      <div
-        style={{
-          width: "100vw",
-          height: "100vh",
-        }}
-        className="d-flex flex-row justify-content-start"
-      >
-        <ScheduleModal
-          show={showScheduleModal}
-          onHide={() => setShowScheduleModal(false)}
-          pub={schedulePublish}
-        />
-        <UploadAsset
-          save={save}
-          path={"/posts/" + slug}
-          show={uploadModalShow}
-          onHide={() => setUploadModalShow(false)}
-        />
-        <ToastContainer
-          position="bottom-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable={false}
-          pauseOnHover={false}
-        />
-        <DeleteModal
-          show={deletePost}
-          onHide={() => setDeletePost(false)}
-          delete={del}
-        />
-        <CategoryModal
-          show={showCategoryModal}
-          onHide={() => setShowCategoryModal(false)}
-          path={"/posts/" + slug}
-          save={save}
-        />
-        {isBreakpoint ? (
-          <div style={{ padding: "0px", width: "45px" }}>
-            <Navbar />
-          </div>
-        ) : (
-          <div style={{ padding: "0px", width: "200px" }}>
-            <LargeNavbar />
-          </div>
-        )}
-        <Container
-          fluid
+      <>
+        {" "}
+        <Head>
+          <title>Blog Editor</title>
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+          />
+        </Head>
+        <div
           style={{
-            fontFamily: "Nunito",
-            overflow: "auto",
-            backgroundImage: "url('/linus-nylund-JP23z_-dA74-unsplash.jpg')",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            width: "100%",
+            height: "100vh",
           }}
-          className="p-0"
+          className="d-flex flex-row justify-content-start"
         >
-          <Container fluid style={{ width: "100%" }} className="p-0">
-            <Navs slug={slug} />
-          </Container>
-          <div className="p-3">
-            <Container
-              fluid
-              className="p-1 d-flex justify-content-center "
-              style={{ color: "#000" }}
-            >
-              <div style={{ fontFamily: "Kaushan Script" }}>
-                <h1>Blog Editor</h1>
-              </div>
+          <ScheduleModal
+            show={showScheduleModal}
+            onHide={() => setShowScheduleModal(false)}
+            pub={schedulePublish}
+          />
+          <UploadAsset
+            save={save}
+            path={"/posts/" + slug}
+            show={uploadModalShow}
+            onHide={() => setUploadModalShow(false)}
+          />
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable={false}
+            pauseOnHover={false}
+          />
+          <DeleteModal
+            show={deletePost}
+            onHide={() => setDeletePost(false)}
+            delete={del}
+          />
+          <CategoryModal
+            show={showCategoryModal}
+            onHide={() => setShowCategoryModal(false)}
+            path={"/posts/" + slug}
+            save={save}
+          />
+          {isBreakpoint ? (
+            <div style={{ padding: "0px", width: "45px" }}>
+              <Navbar />
+            </div>
+          ) : (
+            <div style={{ padding: "0px", width: "200px" }}>
+              <LargeNavbar />
+            </div>
+          )}
+          <Container
+            fluid
+            style={{
+              fontFamily: "Nunito",
+              overflow: "auto",
+              backgroundImage: "url('/linus-nylund-JP23z_-dA74-unsplash.jpg')",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+            className="p-0"
+          >
+            <Container fluid style={{ width: "100%" }} className="p-0">
+              <Navs slug={slug} />
             </Container>
-            {isMobileBreakpoint ? (
+            <div className="p-3">
               <Container
                 fluid
-                style={{ width: "100%", marginBottom: "20px" }}
-                className="p-0 d-flex flex-column justify-content-center"
+                className="p-1 d-flex justify-content-center "
+                style={{ color: "#000" }}
               >
-                <Container fluid style={{ width: "100%" }}>
-                  <Form>
-                    <Form.Group>
-                      <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                        <h4>Blog Title</h4>
-                      </Form.Label>
-                      <Form.Control
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        type="text"
-                        style={{
-                          width: "100%",
-                          background: "rgba(255,255,255, 0.5)",
-                          border: "none",
-                          borderRadius: "10px",
-                          marginBottom: "20px",
-                          boxShadow:
-                            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                        }}
-                      />
-                      <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                        <h4>Blog Description</h4>
-                      </Form.Label>
-                      <Form.Control
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        as="textarea"
-                        rows={5}
-                        style={{
-                          width: "100%",
-                          background: "rgba(255,255,255, 0.5)",
-                          border: "none",
-                          borderRadius: "10px",
-                          marginBottom: "20px",
-                          boxShadow:
-                            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                        }}
-                      />
-                      <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                        <h3>Category</h3>
-                      </Form.Label>
-                      <Container
-                        fluid
-                        className="d-flex flex-row justify-content-between"
-                        style={{ padding: "0" }}
-                      >
+                <div style={{ fontFamily: "Kaushan Script" }}>
+                  <h1>Blog Editor</h1>
+                </div>
+              </Container>
+              {isMobileBreakpoint ? (
+                <Container
+                  fluid
+                  style={{ width: "100%", marginBottom: "20px" }}
+                  className="p-0 d-flex flex-column justify-content-center"
+                >
+                  <Container fluid style={{ width: "100%" }}>
+                    <Form>
+                      <Form.Group>
+                        <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                          <h4>Blog Title</h4>
+                        </Form.Label>
                         <Form.Control
-                          as="select"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          type="text"
                           style={{
-                            marginBottom: "20px",
-                            width: "79%",
+                            width: "100%",
                             background: "rgba(255,255,255, 0.5)",
                             border: "none",
                             borderRadius: "10px",
                             marginBottom: "20px",
                             boxShadow:
                               "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                            height: "45px",
                           }}
-                          value={category}
-                          onChange={(e) => {
-                            setCategory(e.target.value);
-                          }}
-                          aria-label="Select Category..."
-                        >
-                          {categories?.map((e, key) => {
-                            return (
-                              <option value={key} key={key}>
-                                {e.title}
-                              </option>
-                            );
-                          })}
-                        </Form.Control>
-                        <Button
-                          style={{
-                            width: "19%",
-                            height: "45px",
-                            borderWidth: "2px",
-                          }}
-                          variant="outline-dark"
-                          onClick={() => setShowCategoryModal(true)}
-                        >
-                          <b>Add</b>
-                        </Button>
-                      </Container>
-                    </Form.Group>
-                  </Form>
-                </Container>
-                <Container fluid style={{ width: "100%" }}>
-                  <Form>
-                    <Form.Group>
-                      <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                        <h3>Main Image</h3>
-                      </Form.Label>
-                      {mainImage && !showAssets ? (
-                        <div className=" d-flex align-items-center">
-                          <img
-                            src={urlFor(mainImage)}
-                            width="100%"
-                            style={{
-                              boxShadow:
-                                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                              borderRadius: "10px",
-                              marginBottom: "20px",
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-
-                      <Container
-                        fluid
-                        style={{ marginBottom: "20px" }}
-                        className="d-flex p-0  flex-row justify-content-between"
-                      >
-                        <Button
-                          variant="outline-dark"
-                          onClick={() => setShowAssets(!showAssets)}
-                          style={{ width: "49%", borderWidth: "2px" }}
-                        >
-                          <b> Select</b>{" "}
-                        </Button>
-                        <Button
-                          variant="outline-dark"
-                          onClick={() => setUploadModalShow(true)}
-                          style={{ width: "49%", borderWidth: "2px" }}
-                        >
-                          <b>Upload</b>
-                        </Button>
-                      </Container>
-
-                      {showAssets ? (
-                        <div
-                          className="p-1 d-flex justify-content-center"
-                          style={{
-                            marginBottom: "10px",
-                            borderRadius: "10px",
-                            background: "rgba(255,255,255, 0.5)",
-                            boxShadow:
-                              "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                          }}
-                        >
-                          <Row
-                            className="d-flex justify-content-start p-1"
-                            style={{ width: "100%" }}
-                          >
-                            {assets?.map((img, key) => {
-                              return (
-                                <Col
-                                  key={key}
-                                  style={{ padding: "5px" }}
-                                  className="d-flex align-items-center justify-content-center"
-                                  sm={6}
-                                  xs={6}
-                                >
-                                  <Button
-                                    onClick={() => {
-                                      handler(img);
-                                    }}
-                                    style={{
-                                      borderWidth: "0px",
-                                      border: "none",
-                                      padding: "0px",
-                                      background: "transparent",
-                                      width: "100px",
-                                    }}
-                                  >
-                                    <Assets url={img} />
-                                  </Button>
-                                </Col>
-                              );
-                            })}
-                          </Row>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </Form.Group>
-                  </Form>
-                </Container>
-              </Container>
-            ) : (
-              <Container
-                fluid
-                style={{ width: "100%", marginBottom: "20px" }}
-                className="p-0 d-flex justify-content-center align-items-center"
-              >
-                <Container fluid style={{ width: "59%" }}>
-                  <Form>
-                    <Form.Group>
-                      <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                        <h4>Blog Title</h4>
-                      </Form.Label>
-                      <Form.Control
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        type="text"
-                        style={{
-                          width: "100%",
-                          background: "rgba(255,255,255, 0.5)",
-                          border: "none",
-                          borderRadius: "10px",
-                          marginBottom: "20px",
-                          boxShadow:
-                            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                        }}
-                      />
-                      <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                        <h4>Blog Description</h4>
-                      </Form.Label>
-                      <Form.Control
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        as="textarea"
-                        rows={5}
-                        style={{
-                          width: "100%",
-                          background: "rgba(255,255,255, 0.5)",
-                          border: "none",
-                          borderRadius: "10px",
-                          marginBottom: "20px",
-                          boxShadow:
-                            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                        }}
-                      />
-                      <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                        <h3>Category</h3>
-                      </Form.Label>
-                      <Container
-                        fluid
-                        className="d-flex flex-row justify-content-between"
-                        style={{ padding: "0" }}
-                      >
+                        />
+                        <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                          <h4>Blog Description</h4>
+                        </Form.Label>
                         <Form.Control
-                          as="select"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          as="textarea"
+                          rows={5}
                           style={{
-                            marginBottom: "20px",
-                            width: "79%",
+                            width: "100%",
                             background: "rgba(255,255,255, 0.5)",
                             border: "none",
                             borderRadius: "10px",
                             marginBottom: "20px",
                             boxShadow:
                               "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                            height: "45px",
                           }}
-                          value={category}
-                          onChange={(e) => {
-                            setCategory(e.target.value);
-                          }}
-                          aria-label="Select Category..."
+                        />
+                        <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                          <h3>Category</h3>
+                        </Form.Label>
+                        <Container
+                          fluid
+                          className="d-flex flex-row justify-content-between"
+                          style={{ padding: "0" }}
                         >
-                          {categories?.map((e, key) => {
-                            return (
-                              <option value={key} key={key}>
-                                {e.title}
-                              </option>
-                            );
-                          })}
-                        </Form.Control>
-                        <Button
-                          style={{
-                            width: "19%",
-                            height: "45px",
-                            borderWidth: "2px",
-                          }}
-                          variant="outline-dark"
-                          onClick={() => setShowCategoryModal(true)}
-                        >
-                          <b>Add</b>
-                        </Button>
-                      </Container>
-                    </Form.Group>
-                  </Form>
-                </Container>
-                <Container fluid style={{ width: "39%" }}>
-                  <Form>
-                    <Form.Group>
-                      <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                        <h3>Main Image</h3>
-                      </Form.Label>
-                      {mainImage && !showAssets ? (
-                        <div className=" d-flex align-items-center">
-                          <img
-                            src={urlFor(mainImage)}
-                            width="100%"
+                          <Form.Control
+                            as="select"
                             style={{
-                              boxShadow:
-                                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                              marginBottom: "20px",
+                              width: "79%",
+                              background: "rgba(255,255,255, 0.5)",
+                              border: "none",
                               borderRadius: "10px",
                               marginBottom: "20px",
+                              boxShadow:
+                                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                              height: "45px",
                             }}
-                          />
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-
-                      <Container
-                        fluid
-                        style={{ marginBottom: "20px" }}
-                        className="d-flex p-0  flex-row justify-content-between"
-                      >
-                        <Button
-                          variant="outline-dark"
-                          onClick={() => setShowAssets(!showAssets)}
-                          style={{ width: "49%", borderWidth: "2px" }}
-                        >
-                          <b> Select</b>{" "}
-                        </Button>
-                        <Button
-                          variant="outline-dark"
-                          onClick={() => setUploadModalShow(true)}
-                          style={{ width: "49%", borderWidth: "2px" }}
-                        >
-                          <b>Upload</b>
-                        </Button>
-                      </Container>
-
-                      {showAssets ? (
-                        <div
-                          className="p-1 d-flex justify-content-center"
+                            value={category}
+                            onChange={(e) => {
+                              setCategory(e.target.value);
+                            }}
+                            aria-label="Select Category..."
+                          >
+                            {categories?.map((e, key) => {
+                              return (
+                                <option value={key} key={key}>
+                                  {e.title}
+                                </option>
+                              );
+                            })}
+                          </Form.Control>
+                          <Button
+                            style={{
+                              width: "19%",
+                              height: "45px",
+                              borderWidth: "2px",
+                            }}
+                            variant="outline-dark"
+                            onClick={() => setShowCategoryModal(true)}
+                          >
+                            <b>Add</b>
+                          </Button>
+                        </Container>
+                        <Form.Label
+                          className="d-flex justify-content-end align-items-center"
                           style={{
-                            marginBottom: "10px",
-                            borderRadius: "10px",
+                            width: "100%",
+                            fontFamily: "Kaushan Script",
+                            marginBottom: "20px",
+                          }}
+                        >
+                          <Switch
+                            onChange={() => setCheck(!check)}
+                            checked={check}
+                            onColor="#86d3ff"
+                            onHandleColor="#2693e6"
+                            handleDiameter={18}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                            activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                            height={16}
+                            width={35}
+                            className="react-switch"
+                            id="material-switch"
+                          />
+                          <span style={{ marginLeft: "15px" }}>
+                            <h4 style={{ marginBottom: "0px" }}>
+                              Featured Post
+                            </h4>{" "}
+                          </span>
+                        </Form.Label>
+                      </Form.Group>
+                    </Form>
+                  </Container>
+                  <Container fluid style={{ width: "100%" }}>
+                    <Form>
+                      <Form.Group>
+                        <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                          <h3>Main Image</h3>
+                        </Form.Label>
+                        {mainImage && !showAssets ? (
+                          <div className=" d-flex align-items-center">
+                            <img
+                              src={urlFor(mainImage)}
+                              width="100%"
+                              style={{
+                                boxShadow:
+                                  "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                                borderRadius: "10px",
+                                marginBottom: "20px",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+
+                        <Container
+                          fluid
+                          style={{ marginBottom: "20px" }}
+                          className="d-flex p-0  flex-row justify-content-between"
+                        >
+                          <Button
+                            variant="outline-dark"
+                            onClick={() => setShowAssets(!showAssets)}
+                            style={{ width: "49%", borderWidth: "2px" }}
+                          >
+                            <b> Select</b>{" "}
+                          </Button>
+                          <Button
+                            variant="outline-dark"
+                            onClick={() => setUploadModalShow(true)}
+                            style={{ width: "49%", borderWidth: "2px" }}
+                          >
+                            <b>Upload</b>
+                          </Button>
+                        </Container>
+
+                        {showAssets ? (
+                          <div
+                            className="p-1 d-flex justify-content-center"
+                            style={{
+                              marginBottom: "10px",
+                              borderRadius: "10px",
+                              background: "rgba(255,255,255, 0.5)",
+                              boxShadow:
+                                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                            }}
+                          >
+                            <Row
+                              className="d-flex justify-content-start p-1"
+                              style={{ width: "100%" }}
+                            >
+                              {assets?.map((img, key) => {
+                                return (
+                                  <Col
+                                    key={key}
+                                    style={{ padding: "5px" }}
+                                    className="d-flex align-items-center justify-content-center"
+                                    sm={6}
+                                    xs={6}
+                                  >
+                                    <Button
+                                      onClick={() => {
+                                        handler(img);
+                                      }}
+                                      style={{
+                                        borderWidth: "0px",
+                                        border: "none",
+                                        padding: "0px",
+                                        background: "transparent",
+                                        width: "100px",
+                                      }}
+                                    >
+                                      <Assets url={img} />
+                                    </Button>
+                                  </Col>
+                                );
+                              })}
+                            </Row>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </Form.Group>
+                    </Form>
+                  </Container>
+                </Container>
+              ) : (
+                <Container
+                  fluid
+                  style={{ width: "100%", marginBottom: "20px" }}
+                  className="p-0 d-flex justify-content-center align-items-center"
+                >
+                  <Container fluid style={{ width: "59%" }}>
+                    <Form>
+                      <Form.Group>
+                        <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                          <h4>Blog Title</h4>
+                        </Form.Label>
+                        <Form.Control
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          type="text"
+                          style={{
+                            width: "100%",
                             background: "rgba(255,255,255, 0.5)",
+                            border: "none",
+                            borderRadius: "10px",
+                            marginBottom: "20px",
                             boxShadow:
                               "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
                           }}
+                        />
+                        <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                          <h4>Blog Description</h4>
+                        </Form.Label>
+                        <Form.Control
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          as="textarea"
+                          rows={5}
+                          style={{
+                            width: "100%",
+                            background: "rgba(255,255,255, 0.5)",
+                            border: "none",
+                            borderRadius: "10px",
+                            marginBottom: "20px",
+                            boxShadow:
+                              "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                          }}
+                        />
+                        <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                          <h3>Category</h3>
+                        </Form.Label>
+                        <Container
+                          fluid
+                          className="d-flex flex-row justify-content-between"
+                          style={{ padding: "0" }}
                         >
-                          <Row
-                            className="d-flex justify-content-start p-1"
-                            style={{ width: "100%" }}
+                          <Form.Control
+                            as="select"
+                            style={{
+                              marginBottom: "20px",
+                              width: "79%",
+                              background: "rgba(255,255,255, 0.5)",
+                              border: "none",
+                              borderRadius: "10px",
+                              marginBottom: "20px",
+                              boxShadow:
+                                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                              height: "45px",
+                            }}
+                            value={category}
+                            onChange={(e) => {
+                              setCategory(e.target.value);
+                            }}
+                            aria-label="Select Category..."
                           >
-                            {assets?.map((img, key) => {
+                            {categories?.map((e, key) => {
                               return (
-                                <Col
-                                  key={key}
-                                  style={{ padding: "5px" }}
-                                  className="d-flex align-items-center justify-content-center"
-                                  md={6}
-                                  lg={4}
-                                  xl={3}
-                                >
-                                  <Button
-                                    onClick={() => {
-                                      handler(img);
-                                    }}
-                                    style={{
-                                      borderWidth: "0px",
-                                      border: "none",
-                                      padding: "0px",
-                                      background: "transparent",
-                                      width: "100px",
-                                    }}
-                                  >
-                                    <Assets url={img} />
-                                  </Button>
-                                </Col>
+                                <option value={key} key={key}>
+                                  {e.title}
+                                </option>
                               );
                             })}
-                          </Row>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </Form.Group>
-                  </Form>
+                          </Form.Control>
+                          <Button
+                            style={{
+                              width: "19%",
+                              height: "45px",
+                              borderWidth: "2px",
+                            }}
+                            variant="outline-dark"
+                            onClick={() => setShowCategoryModal(true)}
+                          >
+                            <b>Add</b>
+                          </Button>
+                        </Container>
+                        <Form.Label
+                          className="d-flex justify-content-end align-items-center"
+                          style={{
+                            width: "100%",
+                            fontFamily: "Kaushan Script",
+                            marginBottom: "20px",
+                          }}
+                        >
+                          <Switch
+                            onChange={() => setCheck(!check)}
+                            checked={check}
+                            onColor="#86d3ff"
+                            onHandleColor="#2693e6"
+                            handleDiameter={24}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                            activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                            height={21}
+                            width={48}
+                            className="react-switch"
+                            id="material-switch"
+                          />
+                          <span style={{ marginLeft: "10px" }}>
+                            <h4 style={{ marginBottom: "0px" }}>
+                              Featured Post
+                            </h4>{" "}
+                          </span>
+                        </Form.Label>
+                      </Form.Group>
+                    </Form>
+                  </Container>
+                  <Container fluid style={{ width: "39%" }}>
+                    <Form>
+                      <Form.Group>
+                        <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                          <h3>Main Image</h3>
+                        </Form.Label>
+                        {mainImage && !showAssets ? (
+                          <div className=" d-flex align-items-center">
+                            <img
+                              src={urlFor(mainImage)}
+                              width="100%"
+                              style={{
+                                boxShadow:
+                                  "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                                borderRadius: "10px",
+                                marginBottom: "20px",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+
+                        <Container
+                          fluid
+                          style={{ marginBottom: "20px" }}
+                          className="d-flex p-0  flex-row justify-content-between"
+                        >
+                          <Button
+                            variant="outline-dark"
+                            onClick={() => setShowAssets(!showAssets)}
+                            style={{ width: "49%", borderWidth: "2px" }}
+                          >
+                            <b> Select</b>{" "}
+                          </Button>
+                          <Button
+                            variant="outline-dark"
+                            onClick={() => setUploadModalShow(true)}
+                            style={{ width: "49%", borderWidth: "2px" }}
+                          >
+                            <b>Upload</b>
+                          </Button>
+                        </Container>
+
+                        {showAssets ? (
+                          <div
+                            className="p-1 d-flex justify-content-center"
+                            style={{
+                              marginBottom: "10px",
+                              borderRadius: "10px",
+                              background: "rgba(255,255,255, 0.5)",
+                              boxShadow:
+                                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                            }}
+                          >
+                            <Row
+                              className="d-flex justify-content-start p-1"
+                              style={{ width: "100%" }}
+                            >
+                              {assets?.map((img, key) => {
+                                return (
+                                  <Col
+                                    key={key}
+                                    style={{ padding: "5px" }}
+                                    className="d-flex align-items-center justify-content-center"
+                                    md={6}
+                                    lg={4}
+                                    xl={3}
+                                  >
+                                    <Button
+                                      onClick={() => {
+                                        handler(img);
+                                      }}
+                                      style={{
+                                        borderWidth: "0px",
+                                        border: "none",
+                                        padding: "0px",
+                                        background: "transparent",
+                                        width: "100px",
+                                      }}
+                                    >
+                                      <Assets url={img} />
+                                    </Button>
+                                  </Col>
+                                );
+                              })}
+                            </Row>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                      </Form.Group>
+                    </Form>
+                  </Container>
                 </Container>
-              </Container>
-            )}
-            <Container fluid>
-              <Form>
-                <Form.Group>
-                  <Form.Label style={{ fontFamily: "Kaushan Script" }}>
-                    <h3>Blog Body</h3>
-                  </Form.Label>
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "500px",
-                    }}
-                  >
+              )}
+              <Container fluid>
+                <Form>
+                  <Form.Group>
+                    <Form.Label style={{ fontFamily: "Kaushan Script" }}>
+                      <h3>Blog Body</h3>
+                    </Form.Label>
                     <div
-                      ref={quillRef}
                       style={{
-                        background: "rgba(255,255,255, 0.5)",
-                        boxShadow:
-                          "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ height: "130px" }} />
-                </Form.Group>
-              </Form>
-            </Container>
-          </div>
-        </Container>
-        <Container
-          fluid
-          style={{ width: "100%" }}
-          className="p-2 d-flex flex-column justify-content-end fixed-bottom"
-        >
-          {showOptions && (
-            <div
-              className="d-flex justify-content-center"
-              style={{
-                alignSelf: "end",
-                marginRight: "30px",
-                marginBottom: "10px",
-                width: "90px",
-              }}
-            >
-              <Stack direction="vertical" gap={2}>
-                {post[0].isPublished ? (
-                  <>
-                    <Button
-                      variant="outline-dark"
-                      style={{
-                        borderWidth: "2px",
-                        background: "rgba(255,255,255,0.3)",
-                      }}
-                      onClick={() => {
-                        unpublish();
-                        setShowOptions(false);
-                      }}
-                    >
-                      <b> Unpublish </b>
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    <Button
-                      variant="dark"
-                      style={{
-                        background: "rgba(255,255,255,0.3)",
-                        borderRadius: "10px",
-
-                        borderWidth: "2px",
                         width: "100%",
-                        color: "#000",
-                      }}
-                      onClick={() => {
-                        save();
-                        setShowOptions(false);
+                        height: "500px",
                       }}
                     >
-                      <b>Save</b>
-                    </Button>
-                    <div
-                      style={{
-                        background: "rgba(255,255,255,0.3)",
-                        borderRadius: "10px",
-                      }}
-                    >
+                      <div
+                        ref={quillRef}
+                        style={{
+                          background: "rgba(255,255,255, 0.5)",
+                          boxShadow:
+                            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ height: "130px" }} />
+                  </Form.Group>
+                </Form>
+              </Container>
+            </div>
+          </Container>
+          <Container
+            fluid
+            style={{ width: "100%" }}
+            className="p-2 d-flex flex-column justify-content-end fixed-bottom"
+          >
+            {showOptions && (
+              <div
+                className="d-flex justify-content-center"
+                style={{
+                  alignSelf: "end",
+                  marginRight: "30px",
+                  marginBottom: "10px",
+                  width: "90px",
+                }}
+              >
+                <Stack direction="vertical" gap={2}>
+                  {post[0].isPublished ? (
+                    <>
                       <Button
                         variant="outline-dark"
                         style={{
                           borderWidth: "2px",
-                          width: "100%",
+                          background: "rgba(255,255,255,0.3)",
                         }}
                         onClick={() => {
-                          setShowScheduleModal(true);
+                          unpublish();
                           setShowOptions(false);
                         }}
                       >
-                        <b> Scehdule </b>
+                        <b> Unpublish </b>
                       </Button>
-                    </div>
-                  </>
-                )}
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.3)",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <Button
-                    variant="outline-dark"
-                    style={{
-                      borderWidth: "2px",
-                      width: "100%",
-                    }}
-                    onClick={() => setDeletePost(true)}
-                  >
-                    <b>Delete </b>
-                  </Button>
-                </div>{" "}
-              </Stack>
-            </div>
-          )}
-          <Container fluid className="d-flex flex-row justify-content-end">
-            <div style={{ marginRight: "10px", marginBottom: "10px" }}>
-              {post[0].isPublished ? (
-                <Button
-                  variant="dark"
-                  style={{
-                    margin: "0px 5px 0px 5px",
-                    borderRadius: "10px",
-                    height: "40px",
-                  }}
-                  onClick={save}
-                >
-                  Save
-                </Button>
-              ) : (
-                <Button
-                  variant="dark"
-                  style={{
-                    margin: "0px 5px 0px 5px",
-                    borderRadius: "10px",
-                    height: "40px",
-                  }}
-                  onClick={publish}
-                >
-                  Publish
-                </Button>
-              )}
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      <Button
+                        variant="dark"
+                        style={{
+                          background: "rgba(255,255,255,0.3)",
+                          borderRadius: "10px",
 
-              <Button
-                variant="danger"
-                style={{
-                  margin: "0px 5px 0px 5px",
-                  borderRadius: "10px",
-                  height: "40px",
-                }}
-                onClick={() => router.push("/posts")}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="dark"
-                style={{
-                  margin: "0px 5px 0px 5px",
-                  borderRadius: "10px",
-                  height: "40px",
-                }}
-                onClick={() => setShowOptions(!showOptions)}
-              >
-                <div className="d-flex align-items-center">
-                  <BsMenuDown />
-                </div>
-              </Button>
-            </div>
+                          borderWidth: "2px",
+                          width: "100%",
+                          color: "#000",
+                        }}
+                        onClick={() => {
+                          save();
+                          setShowOptions(false);
+                        }}
+                      >
+                        <b>Save</b>
+                      </Button>
+                      <div
+                        style={{
+                          background: "rgba(255,255,255,0.3)",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        <Button
+                          variant="outline-dark"
+                          style={{
+                            borderWidth: "2px",
+                            width: "100%",
+                          }}
+                          onClick={() => {
+                            setShowScheduleModal(true);
+                            setShowOptions(false);
+                          }}
+                        >
+                          <b> Scehdule </b>
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.3)",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <Button
+                      variant="outline-dark"
+                      style={{
+                        borderWidth: "2px",
+                        width: "100%",
+                      }}
+                      onClick={() => setDeletePost(true)}
+                    >
+                      <b>Delete </b>
+                    </Button>
+                  </div>{" "}
+                </Stack>
+              </div>
+            )}
+            <Container fluid className="d-flex flex-row justify-content-end">
+              <div style={{ marginRight: "10px", marginBottom: "10px" }}>
+                {post[0].isPublished ? (
+                  <Button
+                    variant="dark"
+                    style={{
+                      margin: "0px 5px 0px 5px",
+                      borderRadius: "10px",
+                      height: "40px",
+                    }}
+                    onClick={save}
+                  >
+                    Save
+                  </Button>
+                ) : (
+                  <Button
+                    variant="dark"
+                    style={{
+                      margin: "0px 5px 0px 5px",
+                      borderRadius: "10px",
+                      height: "40px",
+                    }}
+                    onClick={publish}
+                  >
+                    Publish
+                  </Button>
+                )}
+
+                <Button
+                  variant="danger"
+                  style={{
+                    margin: "0px 5px 0px 5px",
+                    borderRadius: "10px",
+                    height: "40px",
+                  }}
+                  onClick={() => router.push("/posts")}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="dark"
+                  style={{
+                    margin: "0px 5px 0px 5px",
+                    borderRadius: "10px",
+                    height: "40px",
+                  }}
+                  onClick={() => setShowOptions(!showOptions)}
+                >
+                  <div className="d-flex align-items-center">
+                    <BsMenuDown />
+                  </div>
+                </Button>
+              </div>
+            </Container>
           </Container>
-        </Container>
-      </div>
+        </div>
+      </>
     );
   }
   return <Authenticate />;

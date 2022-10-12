@@ -1,6 +1,4 @@
-import Link from "next/link";
 import { Container } from "react-bootstrap";
-import { urlFor } from "../../client";
 
 export default function PostSmallCard({
   image,
@@ -26,11 +24,16 @@ export default function PostSmallCard({
       }}
     >
       <div>
-        <img
-          src={image}
-          width="250px"
-          style={{ borderTopRightRadius: "10px", borderTopLeftRadius: "10px" }}
-        />
+        {image !== undefined && (
+          <img
+            src={image}
+            width="250px"
+            style={{
+              borderTopRightRadius: "10px",
+              borderTopLeftRadius: "10px",
+            }}
+          />
+        )}
       </div>
       <Container fluid className="p-3 d-flex justify-content-between">
         <div className="d-flex flex-column">
