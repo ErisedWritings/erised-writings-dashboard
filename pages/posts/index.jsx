@@ -45,10 +45,15 @@ export default function Posts({ posts, categories }) {
   const [showModal, setShowModal] = useState(false);
   const [searchVal, setSearchVal] = useState("");
   const [category, setCategory] = useState("All Posts");
-  console.log(category);
 
   const { data: session, status } = useSession();
-  if (status === "loading") {
+  if (
+    status === "loading" ||
+    isMobileBreakpoint === null ||
+    isBreakpoint === null ||
+    isMobileBreakpoint === undefined ||
+    isBreakpoint === undefined
+  ) {
     return <></>;
   }
   if (session) {
@@ -302,17 +307,13 @@ export default function Posts({ posts, categories }) {
                   <Row>
                     {posts
                       ?.filter((val) => {
-                        if (val.isPublished === true) {
-                          if (category === "All Posts") {
-                            return val;
-                          } else if (
-                            val.category._ref ===
-                            categories.find((x) => x.title === category)._id
-                          ) {
-                            return val;
-                          }
-                        } else {
-                          return null;
+                        if (category === "All Posts") {
+                          return val;
+                        } else if (
+                          val.category._ref ===
+                          categories.find((x) => x.title === category)._id
+                        ) {
+                          return val;
                         }
                       })
                       .filter((val) => {
@@ -401,17 +402,13 @@ export default function Posts({ posts, categories }) {
                   <>
                     {posts
                       ?.filter((val) => {
-                        if (val.isPublished === true) {
-                          if (category === "All Posts") {
-                            return val;
-                          } else if (
-                            val.category._ref ===
-                            categories.find((x) => x.title === category)._id
-                          ) {
-                            return val;
-                          }
-                        } else {
-                          return null;
+                        if (category === "All Posts") {
+                          return val;
+                        } else if (
+                          val.category._ref ===
+                          categories.find((x) => x.title === category)._id
+                        ) {
+                          return val;
                         }
                       })
                       .filter((val) => {

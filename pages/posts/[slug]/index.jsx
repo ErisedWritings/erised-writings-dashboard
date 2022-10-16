@@ -144,9 +144,27 @@ export default function BlogEditor({ post, categories, assets, comments }) {
       }
     }
   };
+
   const save = () => {
-    mainImage !== null
-      ? client
+    if (post[0].isPublished) {
+      if (
+        title !== "" &&
+        title !== undefined &&
+        title !== null &&
+        description !== "" &&
+        description !== undefined &&
+        description !== null &&
+        body !== "" &&
+        body !== undefined &&
+        body !== null &&
+        category !== categories.findIndex((x) => x.title === "Undefined") &&
+        category !== undefined &&
+        category !== null &&
+        mainImage !== "" &&
+        mainImage !== undefined &&
+        mainImage !== null
+      ) {
+        client
           .patch(post[0]._id) // Document ID to patch
           .set({
             title: title,
@@ -168,26 +186,55 @@ export default function BlogEditor({ post, categories, assets, comments }) {
               saveError();
               console.log(err);
             }
-          })
-      : client
-          .patch(post[0]._id) // Document ID to patch
-          .set({
-            title: title,
-            body: body,
-            isFeatured: check,
-            description: description,
-            category: { _type: "reference", _ref: categories[category]._id },
-          })
-          .commit() // Perform the patch and return a promise
-          .then(() => {
-            saveToast();
-          })
-          .catch((err) => {
-            if (err) {
-              saveError();
-              console.log(err);
-            }
           });
+      } else {
+        missingFields();
+      }
+    } else {
+      mainImage !== null
+        ? client
+            .patch(post[0]._id) // Document ID to patch
+            .set({
+              title: title,
+              body: body,
+              isFeatured: check,
+              mainImage: {
+                _type: "image",
+                asset: { _type: "reference", _ref: mainImage },
+              },
+              description: description,
+              category: { _type: "reference", _ref: categories[category]._id },
+            })
+            .commit() // Perform the patch and return a promise
+            .then(() => {
+              saveToast();
+            })
+            .catch((err) => {
+              if (err) {
+                saveError();
+                console.log(err);
+              }
+            })
+        : client
+            .patch(post[0]._id) // Document ID to patch
+            .set({
+              title: title,
+              body: body,
+              isFeatured: check,
+              description: description,
+              category: { _type: "reference", _ref: categories[category]._id },
+            })
+            .commit() // Perform the patch and return a promise
+            .then(() => {
+              saveToast();
+            })
+            .catch((err) => {
+              if (err) {
+                saveError();
+                console.log(err);
+              }
+            });
+    }
   };
 
   const unpublish = () => {
@@ -319,7 +366,13 @@ export default function BlogEditor({ post, categories, assets, comments }) {
     }
   };
   const { data: session, status } = useSession();
-  if (status === "loading") {
+  if (
+    status === "loading" ||
+    isMobileBreakpoint === null ||
+    isBreakpoint === null ||
+    isMobileBreakpoint === undefined ||
+    isBreakpoint === undefined
+  ) {
     return <></>;
   }
   if (session) {

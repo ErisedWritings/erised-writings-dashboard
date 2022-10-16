@@ -51,7 +51,13 @@ export default function Dashboard({
   const noResponses = responses.length;
   const [searchVal, setSearchVal] = useState("");
   const { data: session, status } = useSession();
-  if (status === "loading") {
+  if (
+    status === "loading" ||
+    isMobileBreakpoint === null ||
+    isBreakpoint === null ||
+    isMobileBreakpoint === undefined ||
+    isBreakpoint === undefined
+  ) {
     return <></>;
   }
   if (session) {

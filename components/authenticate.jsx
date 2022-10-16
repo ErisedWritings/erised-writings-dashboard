@@ -32,6 +32,9 @@ const useMediaQuery = (width) => {
 export default function Authenticate() {
   const isBreakpoint = useMediaQuery(768);
   const router = useRouter();
+  if (isBreakpoint === undefined || isBreakpoint === undefined) {
+    return <></>;
+  }
   return (
     <>
       <Head>

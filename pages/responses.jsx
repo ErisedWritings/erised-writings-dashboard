@@ -38,7 +38,13 @@ export default function Responses({ responses }) {
   const isMobileBreakpoint = useMediaQuery(500);
   const [searchVal, setSearchVal] = useState("");
   const { data: session, status } = useSession();
-  if (status === "loading") {
+  if (
+    status === "loading" ||
+    isMobileBreakpoint === null ||
+    isBreakpoint === null ||
+    isMobileBreakpoint === undefined ||
+    isBreakpoint === undefined
+  ) {
     return <></>;
   }
   if (session) {
